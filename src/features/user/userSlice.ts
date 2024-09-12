@@ -3,7 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 import { createAppSlice } from "../../app/createAppSlice"
 
 export type User = {
-    userId: number | null,
+    userId: number,
     dateCreated: Date | null,
     email: string,
     hashedPassword: string,
@@ -12,12 +12,12 @@ export type User = {
 }
 
 export const initialState: User = {
-    userId: null,
+    userId: -1,
     dateCreated: null,
     email: '',
     hashedPassword: '',
     isAuthenticated: false,
-    Flash: '',
+    Flash: "",
 }
 
 export const userSlice = createAppSlice({
