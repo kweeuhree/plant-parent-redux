@@ -2,7 +2,7 @@ import type { UserInput } from "./SignUpLoginForm";
 import type { User } from "./userSlice";
 
 export const reqUserSignUp = (data: UserInput) => {
-    console.log('Attempting to sign up user:', data);
+    console.log('Attempting to sign up user:', data.email);
     try {
         const newUser = {
             Flash: "Sign up successful!"
@@ -14,7 +14,7 @@ export const reqUserSignUp = (data: UserInput) => {
 }
 
 export const reqUserLogin = (data: UserInput): User => {
-    console.log(`Attempting to log in user: ${data}`);
+    console.log(`Attempting to log in user: ${data.email}`);
     try {
         const newUser = {
             userId: Math.floor(Math.random() * 1000),
