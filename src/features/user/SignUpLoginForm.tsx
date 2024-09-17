@@ -1,13 +1,16 @@
-import { useAppDispatch, useAppSelector, useFormData } from '../../app/hooks';
+import { useAppDispatch, useAppSelector, useInputData } from '../../app/hooks';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Fragment } from 'react/jsx-runtime';
-import { updateMessage } from '../message/messageSlice';
+import { setMessageWithTimeout } from '../message/messageSlice';
 import { userLogin } from './userSlice';
 import type { User } from './userSlice';
 import { selectPlantsExist } from '../plant/plantSlice';
 import { reqUserLogin, reqUserSignUp } from './fetchUser';
 import SubmitButton from '../../components/SubmitButton';
 import RedirectBox from './RedirectBox';
+import Message from '../message/Message';
+
 
 
 export type UserInput = {
@@ -18,7 +21,7 @@ export type UserInput = {
 export const initialState: UserInput = {email: '', password: ''};
 
 type Props = {
-    formType: string,
+    formMode: string,
 }
 
 const inputOptions: UserInput = {
@@ -39,57 +42,65 @@ const redirectOptions = {
     },
 }
 
-const SignUpLoginForm = ({ formType }: Props) => {
-    // useFormData hook takes initialState and a callback function as arguments
+const SignUpLoginForm = ({ formMode }: Props) => {
+    useEffect(() => {
+        console.log(`Current form type: ${formMode}`);
+    }, []);
+    // useInputData hook takes initialState and a callback function as arguments
     const dispatch = useAppDispatch();
-    const userHasPlants = useAppSelector(selectPlantsExist);
-    const { formData, handleChange, handleSubmit } = useFormData(
+    const hasPlants = useAppSelector(selectPlantsExist);
+    const { inputData, handleChange, handleSubmit } = useInputData(
         initialState, 
-        (data) => formType === 'SIGNUP' ? 
-        handleSignUp(data) : 
-        handleLogin(data)
+        (data) => formMode === 'SIGNUP' ? 
+        signUpWrapper(data) : 
+        loginWrapper(data)
     );
     const navigate = useNavigate();
-    console.log(`Current form type: ${formType}`);
-    const handleSignUp = (data: UserInput) => {
-        const signedUpUser = reqUserSignUp(data);
-        signedUpUser &&
-            dispatch(updateMessage(signedUpUser.Flash));
+    
+
+    const signUpWrapper = (data: UserInput) => {
+        const newUser = reqUserSignUp(data);
+        newUser &&
+            dispatch(setMessageWithTimeout(newUser.Flash));
     }
 
-    const handleLogin = (data: UserInput) => {
-        const loggedInUser: User = reqUserLogin(data);
-        loggedInUser ? (
+    const loginWrapper = (data: UserInput) => {
+        const authenticatedUser: User = reqUserLogin(data);
+        authenticatedUser && (
             dispatch(userLogin({
-                id: loggedInUser.userId, 
-                email: loggedInUser.email, 
-                password: loggedInUser.hashedPassword}))
-            ) : (
-            dispatch(updateMessage(loggedInUser.Flash))
-            );
+                id: authenticatedUser.userId, 
+                email: authenticatedUser.email, 
+                password: authenticatedUser.hashedPassword}))
+            ) 
+
+            dispatch(setMessageWithTimeout(authenticatedUser.Flash));
             // when user logs in check plants length, navigate to all-plants 
             // if plants exist, else navigate to add new plant
-            userHasPlants ? navigate('/all-plants') : navigate('/add-new-plant');
+            setTimeout(() => {
+                hasPlants ? navigate('/all-plants') : navigate('/add-new-plant');
+            }, 1000);
 
     }
 
   return (
     <>
+    <Message />
     <form onSubmit={handleSubmit}>
         {
             Object.entries(inputOptions).map(([key, value]) => {
                 return (
                     <Fragment key={key}>
-                    <label htmlFor={key}>{key.toUpperCase()}</label>
+                    <label htmlFor={key}>{key.charAt(0).toUpperCase() + key.slice(1)}</label>
                     <input 
                         type={key} 
                         id={key} 
                         name={key}
-                        value={formData[key as keyof UserInput]}
+                        value={inputData[key as keyof UserInput]}
                         placeholder={value} 
                         onChange={handleChange}
                         required
                     />
+                    <br />
                     </Fragment>
                 )
             })
@@ -98,7 +109,7 @@ const SignUpLoginForm = ({ formType }: Props) => {
         <SubmitButton />
     </form>
 
-     <RedirectBox redirect={formType === 'SIGNUP' ? redirectOptions.SIGNUP : redirectOptions.LOGIN} />
+     <RedirectBox redirect={formMode === 'SIGNUP' ? redirectOptions.SIGNUP : redirectOptions.LOGIN} />
     </>
   )
 }
