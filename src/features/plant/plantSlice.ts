@@ -3,14 +3,13 @@ import type { AppThunk, RootState } from "../../app/store"
 import { createAppSlice } from "../../app/createAppSlice"
 
 export type Plant = {
-    plantId: number | null,
+    plantId: number,
     parentOf: number | number[] | null,
     childOf: number | null,
     name: string,
-    image: string,
-    dateCreated: Date | null,
-    lastRepotted: Date | null,
-    soilMixRecipe: string,
+    dateCreated: string,
+    lastRepotted: string | null,
+    soilMixRecipe: string | null,
     familyTreeId: number | null,
     timelineId: number | null,
 }
@@ -42,10 +41,10 @@ export const plantSlice = createAppSlice({
         });
       },
     //   this function will be responsible for creating a new timeline in the backend
-      updatePlantImage: (state, action: PayloadAction<{ plantId: number; newImage: string }>) => {
+      updatePlantImage: (state, action: PayloadAction<{ plantId: number; image: string }>) => {
         state.plants = state.plants.map((plant) => {
           if (plant.plantId === action.payload.plantId) {
-            return { ...plant, image: action.payload.newImage };
+            return { ...plant, image: action.payload.image };
           }
           return plant;
         });
