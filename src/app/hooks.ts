@@ -7,28 +7,30 @@
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "./store"
+import { useNavigate } from 'react-router-dom';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>()
 export const useAppSelector = useSelector.withTypes<RootState>()
 
-export const useFormData = <T,>(initialState: T, callback: (data: T) => void) => {
-    const [formData, setFormData] = useState<T>(initialState);
+export const useInputData = <T,>(initialState: T, callback: (data: T) => void) => {
+    const [inputData, setInputData] = useState<T>(initialState);
 
     const handleChange = useCallback(
         ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-            setFormData((prev) => ({
+            const { name, value, files } = target;
+            setInputData((prev) => ({
                 ...prev, 
-                [target.name]: target.value,
+                [name]: files ? files[0] : value,
             }));
-        }, [setFormData]
+        }, [setInputData]
     );
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        callback(formData);
-        setFormData(initialState);
+        callback(inputData);
+        setInputData(initialState);
     };
 
-    return { formData, handleChange, handleSubmit };
+    return { inputData, handleChange, handleSubmit };
 };
