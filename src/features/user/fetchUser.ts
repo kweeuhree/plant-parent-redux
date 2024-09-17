@@ -1,7 +1,7 @@
-import type { Form } from "./SignUpLoginForm";
+import type { UserInput } from "./SignUpLoginForm";
 import type { User } from "./userSlice";
 
-export const reqUserSignUp = (data: Form) => {
+export const reqUserSignUp = (data: UserInput) => {
     console.log('Attempting to sign up user:', data);
     try {
         const newUser = {
@@ -13,7 +13,7 @@ export const reqUserSignUp = (data: Form) => {
     }
 }
 
-export const reqUserLogin = (data: Form): User => {
+export const reqUserLogin = (data: UserInput): User => {
     console.log(`Attempting to log in user: ${data}`);
     try {
         const newUser = {
