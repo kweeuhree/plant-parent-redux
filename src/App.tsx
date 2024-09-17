@@ -12,11 +12,11 @@ const App = () => {
     <div className="App">
       <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} /> 
-          <Route path="/login" element={<SignUpLoginForm formType="LOGIN" />} /> 
-          <Route path="/signup" element={<SignUpLoginForm formType="SIGNUP" />} />
+          <Route path="/login" element={<SignUpLoginForm formMode="LOGIN" />} /> 
+          <Route path="/signup" element={<SignUpLoginForm formMode="SIGNUP" />} />
           <Route path="/all-plants" element={<ProtectedRoute element={AllPlantsDisplay} />} />
-          <Route path="/add-new-plant" element={<ProtectedRoute element={PlantForm} formType="ADD" />} />
-          <Route path="/update-plant" element={<ProtectedRoute element={PlantForm} formType="UPDATE" />} />
+          <Route path="/add-new-plant" element={<ProtectedRoute element={PlantForm} formMode="ADD" />} />
+          <Route path="/update-plant/:id" element={<ProtectedRoute element={PlantForm} formMode="UPDATE" />} />
           <Route path="/profile" element={<ProtectedRoute element={Profile} />} />
       </Routes>
     </div>
