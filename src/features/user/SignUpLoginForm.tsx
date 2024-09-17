@@ -1,11 +1,14 @@
-import { useAppDispatch, useFormData } from '../../app/hooks';
+import { useAppDispatch, useAppSelector, useFormData } from '../../app/hooks';
+import { useNavigate } from 'react-router-dom';
 import { Fragment } from 'react/jsx-runtime';
 import { updateMessage } from '../message/messageSlice';
 import { userLogin } from './userSlice';
 import type { User } from './userSlice';
+import { selectPlantsExist } from '../plant/plantSlice';
 import { reqUserLogin, reqUserSignUp } from './fetchUser';
 import SubmitButton from '../../components/SubmitButton';
 import RedirectBox from './RedirectBox';
+
 
 export type UserInput = {
     email: string,
@@ -39,12 +42,14 @@ const redirectOptions = {
 const SignUpLoginForm = ({ formType }: Props) => {
     // useFormData hook takes initialState and a callback function as arguments
     const dispatch = useAppDispatch();
+    const userHasPlants = useAppSelector(selectPlantsExist);
     const { formData, handleChange, handleSubmit } = useFormData(
         initialState, 
         (data) => formType === 'SIGNUP' ? 
         handleSignUp(data) : 
         handleLogin(data)
     );
+    const navigate = useNavigate();
     console.log(`Current form type: ${formType}`);
     const handleSignUp = (data: UserInput) => {
         const signedUpUser = reqUserSignUp(data);
@@ -62,6 +67,10 @@ const SignUpLoginForm = ({ formType }: Props) => {
             ) : (
             dispatch(updateMessage(loggedInUser.Flash))
             );
+            // when user logs in check plants length, navigate to all-plants 
+            // if plants exist, else navigate to add new plant
+            userHasPlants ? navigate('/all-plants') : navigate('/add-new-plant');
+
     }
 
   return (
