@@ -14,7 +14,7 @@ const App = () => {
           <Route path="/" element={<Navigate to="/login" replace />} /> 
           <Route path="/login" element={<SignUpLoginForm formType="LOGIN" />} /> 
           <Route path="/signup" element={<SignUpLoginForm formType="SIGNUP" />} />
-          <Route path="/" element={<ProtectedRoute element={AllPlantsDisplay} />} />
+          <Route path="/all-plants" element={<ProtectedRoute element={AllPlantsDisplay} />} />
           <Route path="/add-new-plant" element={<ProtectedRoute element={PlantForm} formType="ADD" />} />
           <Route path="/update-plant" element={<ProtectedRoute element={PlantForm} formType="UPDATE" />} />
           <Route path="/profile" element={<ProtectedRoute element={Profile} />} />
