@@ -85,7 +85,8 @@ const SignUpLoginForm = ({ formMode }: Props) => {
   return (
     <>
     <Message />
-    <form onSubmit={handleSubmit}>
+    <label htmlFor='user-form'>{formMode === 'SIGNUP' ? "Sign up" : "Login"}</label>
+    <form id='user-form' onSubmit={handleSubmit}>
         {
             Object.entries(inputOptions).map(([key, value]) => {
                 return (
