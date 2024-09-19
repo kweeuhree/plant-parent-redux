@@ -1,5 +1,5 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+import SubmitButton from '../../components/SubmitButton';
 
 type Props = {
     redirect: {
@@ -21,7 +21,7 @@ const RedirectBox = ({redirect}: Props) => {
   return (
     <div className="redirect-box">
         <p>{content}</p>
-        <button onClick={handleClick}>{buttonText}</button>
+        <SubmitButton onClick={handleClick} text={buttonText} />
     </div>
   )
 }
