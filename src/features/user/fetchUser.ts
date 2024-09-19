@@ -14,7 +14,7 @@ export const reqUserSignUp = (data: UserInput) => {
 }
 
 export const reqUserLogin = (data: UserInput): User => {
-    console.log(`Attempting to log in user: ${data.email}`);
+    console.log(`Attempting to log in user: ${data.email} and ${data.password}`);
     try {
         const newUser = {
             userId: Math.floor(Math.random() * 1000),
@@ -24,6 +24,7 @@ export const reqUserLogin = (data: UserInput): User => {
             hashedPassword: data.password, 
             Flash: "Log in successful!"
         }
+        console.log(newUser);
         return newUser;    
     } catch (error) {
         throw new Error('Login failed');

@@ -26,6 +26,7 @@ export const userSlice = createAppSlice({
     reducers: {
         userLogin:(state, action: PayloadAction<{id: number, email: string, password: string}>) => {
             const { id, email, password } = action.payload;
+            console.log(`User reducer loggin in with: ${action.payload}`);
             state.userId = id;
             state.email = email;
             state.hashedPassword = password;

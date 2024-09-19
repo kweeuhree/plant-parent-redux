@@ -6,9 +6,15 @@ export const addNewPlantReq = (plantData: PlantData, plantName: string) => {
     console.log('Attempting to post a new plant...');
     try {
         const newPlant = {
-            plantId: Math.floor(Math.random() * 1000),
+            plantId: (Math.floor(Math.random() * 1000)).toString(),
             name: plantName,
             dateCreated: JSON.stringify(currentDate),
+            parentOf: null,
+            childOf: null,
+            soilMixRecipe: null,
+            familyTreeId: null,
+            timelineId: null,
+            lastRepotted: null,
             Flash: "Plant is added!"
         }
         console.log(newPlant);

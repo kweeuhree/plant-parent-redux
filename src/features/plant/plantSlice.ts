@@ -3,7 +3,7 @@ import type { AppThunk, RootState } from "../../app/store"
 import { createAppSlice } from "../../app/createAppSlice"
 
 export type Plant = {
-    plantId: number,
+    plantId: string,
     parentOf: number | number[] | null,
     childOf: number | null,
     name: string,
@@ -29,19 +29,19 @@ export const plantSlice = createAppSlice({
       addNewPlant: (state, action: PayloadAction<Plant>) => {
         state.plants.push(action.payload);
       },
-      deletePlant: (state, action: PayloadAction<number>) => {
+      deletePlant: (state, action: PayloadAction<string>) => {
         state.plants = state.plants.filter((plant) => plant.plantId !== action.payload);
       },
-      updatePlant: (state, action: PayloadAction<{ id: number; title: string }>) => {
+      updatePlant: (state, action: PayloadAction<{ plantId: string; name: string }>) => {
         state.plants = state.plants.map((plant) => {
-          if (plant.plantId === action.payload.id) {
-            return { ...plant, title: action.payload.title };
+          if (plant.plantId === action.payload.plantId) {
+            return { ...plant, title: action.payload.name };
           }
           return plant;
         });
       },
     //   this function will be responsible for creating a new timeline in the backend
-      updatePlantImage: (state, action: PayloadAction<{ plantId: number; image: string }>) => {
+      updatePlantImage: (state, action: PayloadAction<{ plantId: string; image: string }>) => {
         state.plants = state.plants.map((plant) => {
           if (plant.plantId === action.payload.plantId) {
             return { ...plant, image: action.payload.image };
@@ -49,7 +49,7 @@ export const plantSlice = createAppSlice({
           return plant;
         });
       },
-      repotPlant: (state, action: PayloadAction<{plantId: number, newRepottingDate: Date}>) => {
+      repotPlant: (state, action: PayloadAction<{plantId: string, newRepottingDate: string}>) => {
         state.plants = state.plants.map((plant) => {
             if (plant.plantId === action.payload.plantId) {
               return { ...plant, lastRepotted: action.payload.newRepottingDate };
@@ -57,7 +57,7 @@ export const plantSlice = createAppSlice({
             return plant;
           });
       },
-      makeAPup: (state, action: PayloadAction<{parentId: number, childId: number}>) => {
+      makeAPup: (state, action: PayloadAction<{parentId: string, childId: number}>) => {
         state.plants = state.plants.map((plant) => {
             if (plant.plantId === action.payload.parentId) {
               return { ...plant, parentOf: action.payload.childId };
@@ -65,7 +65,7 @@ export const plantSlice = createAppSlice({
             return plant;
           });
       },
-      soilMixRecipe: (state, action: PayloadAction<{plantId: number, newSoilMixRecipe: string}>) => {
+      soilMixRecipe: (state, action: PayloadAction<{plantId: string, newSoilMixRecipe: string}>) => {
         state.plants = state.plants.map((plant) => {
             if (plant.plantId === action.payload.plantId) {
               return { ...plant, soilMixRecipe: action.payload.newSoilMixRecipe };
@@ -76,13 +76,14 @@ export const plantSlice = createAppSlice({
     },
        selectors: {
             selectPlantsExist: state => state.plants.length > 0,
+            selectPlants: state => state.plants,
     }
   });
 
 export const { addNewPlant, updatePlant, updatePlantImage, deletePlant, 
                repotPlant, makeAPup, soilMixRecipe } = plantSlice.actions;
 
-export const { selectPlantsExist } = plantSlice.selectors
+export const { selectPlantsExist, selectPlants } = plantSlice.selectors
 
 
 export default plantSlice.reducer;

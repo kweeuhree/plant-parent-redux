@@ -7,7 +7,6 @@
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "./store"
-import { useNavigate } from 'react-router-dom';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>()
@@ -15,6 +14,7 @@ export const useAppSelector = useSelector.withTypes<RootState>()
 
 export const useInputData = <T,>(initialState: T, callback: (data: T) => void) => {
     const [inputData, setInputData] = useState<T>(initialState);
+    const [file, setFile] = useState<File | string>('');
 
     const handleChange = useCallback(
         ({ target }: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,14 +23,19 @@ export const useInputData = <T,>(initialState: T, callback: (data: T) => void) =
                 ...prev, 
                 [name]: files ? files[0] : value,
             }));
-        }, [setInputData]
+
+            if(files) {
+                setFile(URL.createObjectURL(files[0]));
+            } 
+        }, []
     );
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         callback(inputData);
         setInputData(initialState);
+        setFile('');
     };
 
-    return { inputData, handleChange, handleSubmit };
+    return { inputData, file, handleChange, handleSubmit };
 };

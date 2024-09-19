@@ -1,13 +1,15 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useRedirectAfterTimeout } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import type { Image } from '../image/imageSlice';
 import SubmitButton from '../../components/SubmitButton';
 import Message from '../message/Message';
 import { useInputData } from '../../app/hooks';
 import { addNewPlant, updatePlant } from './plantSlice';
 import { addNewPlantReq, updatePlantReq } from './fetchPlant';
 import { setMessageWithTimeout } from '../message/messageSlice';
-
+import ImageContainer from './ImageContainer';
+import { uploadImage, uploadRequest, uploadFailure, selectImages } from '../image/imageSlice';
 
 type Props = {
   formMode: string, 
@@ -16,40 +18,49 @@ type Props = {
 
 export type PlantData = {
   name: string,
-  image: File | undefined,
+  image: Image,
 }
 
 const PlantForm = ({ formMode, plantId }: Props) => {
+  const { loading, error } = useAppSelector(state => state.images);
   useEffect(() => {
     console.log(`Current form type: ${formMode}`);
 }, []);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const initialState: PlantData = {name: '', image: undefined}; 
+    const initialState: PlantData = {name: '', image: null}; 
     // useInputData hook takes initialState and a callback function as arguments
-    const { inputData, handleChange, handleSubmit } = useInputData(
+    const { inputData, file, handleChange, handleSubmit } = useInputData(
         initialState, 
-        (plantData) => appendPlantData(plantData) 
+        (plantData) => processPlantData(plantData) 
     );
 
-    const appendPlantData = (plantData: PlantData) => {
+    const processPlantData = (plantData: PlantData) => {
       const formData = new FormData();
-      formData.append('name', plantData.name);
       formData.append('image', plantData.image);
 
-      formMode === 'ADD' ?
-      addNewPlantWrapper(formData, plantData.name) :
-      updatePlantWrapper(formData, plantData.name)
+      try {
+        dispatch(uploadRequest());
+        const imageIsUploaded = uploadImage(formData);
+        formMode === 'ADD' ?
+      addNewPlantWrapper(plantData.name, imageIsUploaded.secure_url) :
+      updatePlantWrapper(imageIsUploaded.secure_url);
+
+      } catch(error) {
+        dispatch(setMessageWithTimeout(error))
+      }
     }
 
-    const addNewPlantWrapper = (plantData: FormData, plantName: string) =>  {
+    const addNewPlantWrapper = (plantName: string, imageUrl: string) =>  {
       console.log(`Adding new plant: ${plantName}`);
       try {
-        const plantIsAdded = addNewPlantReq(plantData, plantName);
+        const plantIsAdded = addNewPlantReq(plantName, imageUrl);
         if(plantIsAdded) {
+          
           dispatch(setMessageWithTimeout(plantIsAdded.Flash));
           dispatch(addNewPlant(plantIsAdded));
-
+          console.log('Just added image info:', plantIsAdded.name, plantIsAdded.plantId);
+          
           setTimeout(() => {
             navigate('/all-plants');
           }, 1000);
@@ -59,11 +70,11 @@ const PlantForm = ({ formMode, plantId }: Props) => {
       }
     }
 
-    const updatePlantWrapper = (plantData) => {
-      console.log(`Updating plant: ${plantData}`);
+    const updatePlantWrapper = (newImageUrl: string) => {
+      console.log(`Updating plant`);
     
       try {
-        const plantIsUpdated = updatePlantReq(formData, plantId);
+        const plantIsUpdated = updatePlantReq(newImageUrl, plantId);
         if(plantIsUpdated) {
           dispatch(updatePlant(plantIsUpdated));
         } else {
@@ -96,7 +107,8 @@ const PlantForm = ({ formMode, plantId }: Props) => {
             onChange={handleChange}
             required />
 
-          <SubmitButton /> 
+          <SubmitButton text={loading ? 'Uploading...' : 'Upload'}/> 
+          <ImageContainer alt="Preview" src={file} />
       </form>
   
   </>
