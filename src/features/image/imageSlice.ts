@@ -7,10 +7,16 @@ export type Image = {
     imageId: string,
   }
 
-const initialState = {
+type ImageState = {
+  loading: boolean,
+  images: Image[],
+  error: string,
+}
+
+const initialState: ImageState = {
     loading: false,
     images: [],
-    error: ''
+    error: '',
 
 }
 
@@ -21,8 +27,7 @@ export const imageSlice = createAppSlice({
       uploadRequest: (state) => {
         state.loading = true;
       },
-      uploadImage: (state, action: PayloadAction<Image>) => {
-        state.images.push(action.payload);
+      uploadSuccess: (state) => {
         state.loading = false;
       },
       uploadFailure: (state, action: PayloadAction<string>) => {
@@ -55,9 +60,42 @@ export const imageSlice = createAppSlice({
     }
   });
 
-export const { updateTimelineImage, updateImage, uploadRequest, uploadFailure, deleteImage, uploadImage } = imageSlice.actions;
+export const { updateTimelineImage, updateImage, uploadRequest, uploadFailure, uploadSuccess, deleteImage } = imageSlice.actions;
 
 export const { selectImages } = imageSlice.selectors
 
 
 export default imageSlice.reducer;
+
+// Define the asynchronous thunk
+export const uploadImage = (formData: FormData): AppThunk => async (dispatch) => {
+  const cloudName = import.meta.env.VITE_CLOUD_NAME;
+  const preset = import.meta.env.VITE_PRESET;
+
+  dispatch(uploadRequest());
+  
+  try {
+
+    formData.append('upload_preset', preset);
+
+    // Make the async request to Cloudinary
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+      {
+        method: 'POST',
+        body: formData,
+      }
+    );
+    const data = await response.json();
+    console.log(data, 'received after uploading to cloudinary');
+    if (!response.ok) {
+      throw new Error(data.error?.message || 'Image upload failed');
+    }
+    dispatch(uploadSuccess());
+    return {imageUrl: data.secure_url, imageId: data.asset_id};
+   
+
+  } catch (error: any) {
+    dispatch(uploadFailure(error.message || 'Upload failed'));
+  }
+};
