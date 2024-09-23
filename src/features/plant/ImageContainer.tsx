@@ -1,16 +1,20 @@
 type Props = {
     alt: string,
-    src: File | string | null,
+    src: string | null,
+    width?: string,
+    height?: string,
 }
 
-const ImageContainer = ( {alt, src}: Props ) => {
+const defaultImage = "https://i0.wp.com/unclejohnsplants.com/wp-content/uploads/woocommerce-placeholder.png?resize=300%2C300&ssl=1";
+
+const ImageContainer = ( {alt, src, width, height}: Props ) => {
   return (
     <>
     {
         !src ? (
-            <img alt="Failed to load" src="https://www.drupal.org/files/drupal-media-colorbox-failed-to-load.png" />
+            <img alt="Failed to load" src={defaultImage} />
         ) : (
-            <img alt={alt} src={src} />
+            <img alt={alt} src={src} width={width} height={height}/>
         )
     }
     </>

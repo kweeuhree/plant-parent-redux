@@ -1,26 +1,18 @@
-import PlantDisplay from "./PlantDisplay"
+import PlantPreview from "./PlantPreview"
 import type { Plant } from './plantSlice'
-import { useNavigate } from 'react-router-dom'
 
 type Props = {
   plants: Plant[],
 }
 
 const AllPlantsDisplay = ( { plants }: Props ) => {
-  const navigate = useNavigate();
-  
-  const handleClick = (plantId: number) => {
-    navigate(`/plant/${plantId}`);
-  }
 
   const plantsList = plants?.map((plant) => (
-    <PlantDisplay  
+    <PlantPreview  
       key={plant.plantId} 
       plant={plant}
-      onClick={()=> handleClick(plant.plantId)} 
-      display="preview" />
+       />
   ))
-
 
   return (
     <>
@@ -30,7 +22,7 @@ const AllPlantsDisplay = ( { plants }: Props ) => {
           {plantsList}
         </ul>
       ) : (
-        navigate('/add-plant')
+        'no plants to display'
       )
     }
     </>

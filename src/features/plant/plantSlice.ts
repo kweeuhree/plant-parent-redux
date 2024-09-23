@@ -1,13 +1,15 @@
 import type { PayloadAction } from "@reduxjs/toolkit"
 import type { AppThunk, RootState } from "../../app/store"
 import { createAppSlice } from "../../app/createAppSlice"
+import type { Image } from "../image/imageSlice"
 
 export type Plant = {
     plantId: string,
-    parentOf: number | number[] | null,
-    childOf: number | null,
     name: string,
     dateCreated: string,
+    image: Image,
+    parentOf: number | number[] | null,
+    childOf: number | null,
     lastRepotted: string | null,
     soilMixRecipe: string | null,
     familyTreeId: number | null,
@@ -16,6 +18,7 @@ export type Plant = {
 
 export type PlantArray = {
     plants: Plant[],
+    selectedPlant?: Plant,
 }
 
 export const initialState: PlantArray = {
@@ -26,16 +29,28 @@ export const plantSlice = createAppSlice({
     name: "plants",
     initialState,
     reducers: {
+      getPlantById: (state, action:PayloadAction<string>) => {
+        const foundPlant = state.plants.find(plant => plant.plantId === action.payload);
+        state.selectedPlant = foundPlant;
+      },
       addNewPlant: (state, action: PayloadAction<Plant>) => {
         state.plants.push(action.payload);
       },
       deletePlant: (state, action: PayloadAction<string>) => {
         state.plants = state.plants.filter((plant) => plant.plantId !== action.payload);
       },
-      updatePlant: (state, action: PayloadAction<{ plantId: string; name: string }>) => {
+      updatePlant: (state, action: PayloadAction<{ plantId: string; image: Image }>) => {
+        console.log("Action payload: ", action.payload); 
         state.plants = state.plants.map((plant) => {
           if (plant.plantId === action.payload.plantId) {
-            return { ...plant, title: action.payload.name };
+            return {
+              ...plant,
+              image: {
+                ...plant.image,  
+                imageId: action.payload.image.imageId, 
+                imageUrl: action.payload.image.imageUrl,
+              },
+            };
           }
           return plant;
         });
@@ -77,13 +92,14 @@ export const plantSlice = createAppSlice({
        selectors: {
             selectPlantsExist: state => state.plants.length > 0,
             selectPlants: state => state.plants,
+            selectSpecificPlant: state => state.selectedPlant
     }
   });
 
-export const { addNewPlant, updatePlant, updatePlantImage, deletePlant, 
+export const { getPlantById, addNewPlant, updatePlant, updatePlantImage, deletePlant, 
                repotPlant, makeAPup, soilMixRecipe } = plantSlice.actions;
 
-export const { selectPlantsExist, selectPlants } = plantSlice.selectors
+export const { selectPlantsExist, selectPlants, selectSpecificPlant } = plantSlice.selectors
 
 
 export default plantSlice.reducer;
