@@ -10,7 +10,7 @@ type Props = {
 };
 
 const RedirectBox = ({redirect}: Props) => {
-    const navigate = useNavigateToPath('');
+    const navigate = useNavigateToPath();
     const { redirectPath, content, buttonText } = redirect;
 
   return (

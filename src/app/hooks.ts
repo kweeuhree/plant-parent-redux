@@ -44,11 +44,11 @@ export const useInputData = <T,>(initialState: T, callback: (data: T) => void) =
 };
 
 
-export const useNavigateToPath = (basePath: string) => {
+export const useNavigateToPath = () => {
     const navigate = useNavigate();
 
     const navigateToPath = (path: string) => {
-        navigate(`${basePath}${path}`)
+        navigate(path);
     }
 
     const handleNavigateToPath = (path: string, timeout?: number) => {

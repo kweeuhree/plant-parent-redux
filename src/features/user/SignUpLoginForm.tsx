@@ -1,8 +1,6 @@
-import { useEffect } from 'react';
 import { Fragment } from 'react/jsx-runtime';
-import { useAppDispatch, useAppSelector, useInputData, useNavigateToPath } from '../../app/hooks';
+import { useAppDispatch, useAppSelector, useInputData, useMessageWithTimeOut, useNavigateToPath } from '../../app/hooks';
 // message slice imports
-import { setMessageWithTimeout } from '../message/messageSlice';
 import Message from '../message/Message';
 // plant slice imports
 import { selectPlantsExist } from '../plant/plantSlice';
@@ -80,7 +78,7 @@ const SignUpLoginForm = ({ formMode }: Props) => {
             dispatch(setMessageWithTimeout(authenticatedUser.Flash));
             // when user logs in check plants length, navigate to all-plants 
             // if plants exist, else navigate to add new plant
-            navigate(hasPlants ? '/all-plants' : '/add-new-plant', 500);
+            navigate(loginRedirectPath, 1000);
     }
 
   return (
