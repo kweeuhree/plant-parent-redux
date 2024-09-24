@@ -1,7 +1,9 @@
-import { Link, useNavigate } from "react-router-dom";
-import ImageContainer from "./ImageContainer";
-import type { Plant } from "./plantSlice";
 import { useAppDispatch } from '../../app/hooks';
+import { useNavigate } from "react-router-dom";
+// image slice imports
+import ImageContainer from "../image/ImageContainer";
+// plant slice imports
+import type { Plant } from "./plantSlice";
 import { getPlantById } from './plantSlice';
 
 
