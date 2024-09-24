@@ -64,3 +64,17 @@ export const useNavigateToPath = () => {
 
   return handleNavigateToPath;
 }
+
+export const useSelectedPlant = () => {
+    return useAppSelector(selectSpecificPlant);
+}
+
+export const useMessageWithTimeOut = () => {
+    const dispatch = useAppDispatch();
+
+    const setMessage = (message: string) => {
+        dispatch(setMessageWithTimeout(message))
+    }
+
+    return setMessage;
+}

@@ -33,6 +33,9 @@ export const plantSlice = createAppSlice({
         const foundPlant = state.plants.find(plant => plant.plantId === action.payload);
         state.selectedPlant = foundPlant;
       },
+      unselectPlant:(state) => {
+        state.selectedPlant = undefined;
+      },
       addNewPlant: (state, action: PayloadAction<Plant>) => {
         state.plants.push(action.payload);
       },
@@ -97,7 +100,7 @@ export const plantSlice = createAppSlice({
   });
 
 export const { getPlantById, addNewPlant, updatePlant, updatePlantImage, deletePlant, 
-               repotPlant, makeAPup, soilMixRecipe } = plantSlice.actions;
+               repotPlant, makeAPup, soilMixRecipe, unselectPlant } = plantSlice.actions;
 
 export const { selectPlantsExist, selectPlants, selectSpecificPlant } = plantSlice.selectors
 

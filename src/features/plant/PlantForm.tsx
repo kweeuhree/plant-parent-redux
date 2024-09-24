@@ -6,9 +6,8 @@ import { uploadImage } from '../image/imageSlice';
 import ImageContainer from '../image/ImageContainer';
 // message slice imports
 import Message from '../message/Message';
-import { setMessageWithTimeout } from '../message/messageSlice';
 // plant slice imports
-import { addNewPlant, selectSpecificPlant, updatePlant } from './plantSlice';
+import { addNewPlant, updatePlant, unselectPlant } from './plantSlice';
 import { addNewPlantReq, updatePlantReq } from './fetchPlant';
 // components
 import Button from '../../components/Button';
@@ -32,7 +31,14 @@ const PlantForm = ({ formMode, plantId }: Props) => {
 }, [formMode]);
 
     const dispatch = useAppDispatch();
-    const navigate = useNavigateToPath('');
+    const navigate = useNavigateToPath();
+    const setMessage = useMessageWithTimeOut();
+    // use selected plant on form update
+    const plant = useSelectedPlant();
+
+    useEffect(() => {
+      formMode === 'ADD' && dispatch(unselectPlant());
+  }, [formMode, dispatch]);
 
     // useInputData hook takes initialState and a callback function as arguments
     const initialState: PlantData =  formMode === 'ADD' ? {name: '', image: null} : {image: null}; 
@@ -59,7 +65,7 @@ const PlantForm = ({ formMode, plantId }: Props) => {
       updatePlantWrapper(imageIsUploaded);
 
       } catch(error) {
-        dispatch(setMessageWithTimeout(`${error instanceof Error && error}`))
+        setMessage(`${error instanceof Error && error}`);
       }
     }
 
@@ -69,9 +75,8 @@ const PlantForm = ({ formMode, plantId }: Props) => {
         const plantIsAdded = addNewPlantReq(image, plantName);
         if(plantIsAdded) {
           
-          dispatch(setMessageWithTimeout(plantIsAdded.Flash));
+          setMessage(plantIsAdded.Flash);
           dispatch(addNewPlant(plantIsAdded));
-          console.log('Just added image info:', plantIsAdded.name, plantIsAdded.plantId);
 
           navigate('/all-plants', 1000);
         } 
@@ -82,9 +87,14 @@ const PlantForm = ({ formMode, plantId }: Props) => {
 
     const updatePlantWrapper = async (newImage: Image) => {
       console.log(`Updating plant with ${newImage.imageId} and ${newImage.imageUrl} `);
-      
+
+      if(!plant) {
+        setMessage('Did not find a plant');
+        return;
+      }
+
       try {
-        const plantIsUpdated = await updatePlantReq(newImage, plant.plantId, plant?.name, plant?.dateCreated);
+        const plantIsUpdated = await updatePlantReq(newImage, plant.plantId, plant.name, plant.dateCreated);
         if (plantIsUpdated) {
           dispatch(updatePlant({
             plantId: plant.plantId,
@@ -93,7 +103,7 @@ const PlantForm = ({ formMode, plantId }: Props) => {
           navigate('/all-plants', 1000);
           
         } else {
-          dispatch(setMessageWithTimeout(plantIsUpdated.Flash));
+          setMessage(plantIsUpdated.Flash);
         }
       } catch (error) {
         throw new Error(`Failed updating plant: ${error}`);
@@ -103,9 +113,9 @@ const PlantForm = ({ formMode, plantId }: Props) => {
   
     return (
       <>
-      {!error ? <Message /> : error}
+      {!error ? <Message /> : setMessage(error)}
       <form onSubmit={handleSubmit}>
-         {formMode === 'ADD' &&
+         {/* {formMode === 'ADD' &&
          ( <>
             <label htmlFor='plant-name'>Plant name:</label>
             <input id="plant-name" 
