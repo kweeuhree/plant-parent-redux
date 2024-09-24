@@ -109,9 +109,7 @@ const PlantForm = ({ formMode }: Props) => {
       <>
       {!error ? <Message /> : setMessage(error)}
       <form onSubmit={handleSubmit}>
-         {/* {formMode === 'ADD' &&
-         ( <>
-            <label htmlFor='plant-name'>Plant name:</label>
+          <label htmlFor='plant-name'>Plant name:</label>
             <input id="plant-name" 
               name="name" 
               type="text" 
@@ -120,8 +118,6 @@ const PlantForm = ({ formMode }: Props) => {
               required />
 
             <br />
-         </>
-        )}
 
           <label htmlFor='plant-image'>Plant image:</label>
           <input id="plant-image" 
