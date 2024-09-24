@@ -1,15 +1,18 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector, useInputData } from '../../app/hooks';
+// image slice imports
 import type { Image } from '../image/imageSlice';
-import SubmitButton from '../../components/SubmitButton';
+import { uploadImage } from '../image/imageSlice';
+import ImageContainer from '../image/ImageContainer';
+// message slice imports
 import Message from '../message/Message';
-import { useInputData } from '../../app/hooks';
+import { setMessageWithTimeout } from '../message/messageSlice';
+// plant slice imports
 import { addNewPlant, selectSpecificPlant, updatePlant } from './plantSlice';
 import { addNewPlantReq, updatePlantReq } from './fetchPlant';
-import { setMessageWithTimeout } from '../message/messageSlice';
-import ImageContainer from './ImageContainer';
-import { uploadImage } from '../image/imageSlice';
+// components
+import SubmitButton from '../../components/SubmitButton';
 
 type Props = {
   formMode: string, 
