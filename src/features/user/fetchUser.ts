@@ -18,7 +18,7 @@ export const reqUserLogin = (data: UserInput): User => {
     try {
         const newUser = {
             userId: Math.floor(Math.random() * 1000),
-            dateCreated: new Date(),
+            dateCreated: new Date().toLocaleString(),
             isAuthenticated: true,
             email: data.email,
             hashedPassword: data.password, 

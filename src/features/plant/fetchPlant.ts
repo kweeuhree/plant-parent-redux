@@ -27,7 +27,7 @@ export const addNewPlantReq = (image: Image, plantName: string) => {
     }
 }
 
-export const updatePlantReq = async (newImage: Image, plantId: string, plantName: string, dateCreated) => {
+export const updatePlantReq = async (newImage: Image, plantId: string, plantName: string, dateCreated: string) => {
     console.log(`Attempting to update a plant with id ${plantId}...`);
     try {
         const updatedPlant = {

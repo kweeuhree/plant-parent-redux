@@ -72,7 +72,9 @@ const SignUpLoginForm = ({ formMode }: Props) => {
             dispatch(userLogin({
                 id: authenticatedUser.userId, 
                 email: authenticatedUser.email, 
-                password: authenticatedUser.hashedPassword}))
+                password: authenticatedUser.hashedPassword,
+                dateCreated: authenticatedUser.dateCreated,
+            }))
             ) 
 
             setMessage(authenticatedUser.Flash);
