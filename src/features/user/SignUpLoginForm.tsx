@@ -80,7 +80,7 @@ const SignUpLoginForm = ({ formMode }: Props) => {
             dispatch(setMessageWithTimeout(authenticatedUser.Flash));
             // when user logs in check plants length, navigate to all-plants 
             // if plants exist, else navigate to add new plant
-            navigate(hasPlants ? '/all-plants' : '/add-new-plant', 1000);
+            navigate(hasPlants ? '/all-plants' : '/add-new-plant', 500);
     }
 
   return (
