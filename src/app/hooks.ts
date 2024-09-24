@@ -7,6 +7,7 @@
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "./store"
+import { useNavigate } from 'react-router-dom';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>()
@@ -39,3 +40,14 @@ export const useInputData = <T,>(initialState: T, callback: (data: T) => void) =
 
     return { inputData, file, handleChange, handleSubmit };
 };
+
+
+export const useNavigateToPath = (basePath: string) => {
+    const navigate = useNavigate();
+
+    const handleNavigateToPath = (path: string) => {
+        navigate(`${basePath}${path}`);
+    }
+
+  return handleNavigateToPath;
+}
