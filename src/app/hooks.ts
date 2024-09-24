@@ -15,7 +15,7 @@ export const useAppSelector = useSelector.withTypes<RootState>()
 
 export const useInputData = <T,>(initialState: T, callback: (data: T) => void) => {
     const [inputData, setInputData] = useState<T>(initialState);
-    const [file, setFile] = useState<File | string>('');
+    const [file, setFile] = useState<string>('');
 
     const handleChange = useCallback(
         ({ target }: React.ChangeEvent<HTMLInputElement>) => {

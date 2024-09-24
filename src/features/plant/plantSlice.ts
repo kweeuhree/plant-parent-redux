@@ -56,7 +56,7 @@ export const plantSlice = createAppSlice({
         });
       },
     //   this function will be responsible for creating a new timeline in the backend
-      updatePlantImage: (state, action: PayloadAction<{ plantId: string; image: string }>) => {
+      updatePlantImage: (state, action: PayloadAction<{ plantId: string; image: Image }>) => {
         state.plants = state.plants.map((plant) => {
           if (plant.plantId === action.payload.plantId) {
             return { ...plant, image: action.payload.image };

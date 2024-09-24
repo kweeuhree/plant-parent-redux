@@ -1,6 +1,6 @@
 type Props = {
     alt: string,
-    src: string | null,
+    src?: string,
     width?: string,
     height?: string,
 }

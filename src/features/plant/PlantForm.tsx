@@ -127,7 +127,7 @@ const PlantForm = ({ formMode, plantId }: Props) => {
             required />
 
           <Button type="submit" text={loading ? 'Uploading...' : 'Upload'}/> 
-          <ImageContainer alt="Preview" src={file ? file : plant?.image.imageUrl} />
+          <ImageContainer alt="Preview" src={file || plant?.image.imageUrl} />
       </form>
         <NavigateToProfileButton />
   </>
