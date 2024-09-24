@@ -1,15 +1,20 @@
-import { useAppDispatch, useAppSelector, useInputData } from '../../app/hooks';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Fragment } from 'react/jsx-runtime';
+import { useAppDispatch, useAppSelector, useInputData } from '../../app/hooks';
+// message slice imports
 import { setMessageWithTimeout } from '../message/messageSlice';
+import Message from '../message/Message';
+// plant slice imports
+import { selectPlantsExist } from '../plant/plantSlice';
+// user slice imports
 import { userLogin } from './userSlice';
 import type { User } from './userSlice';
-import { selectPlantsExist } from '../plant/plantSlice';
 import { reqUserLogin, reqUserSignUp } from './fetchUser';
-import SubmitButton from '../../components/SubmitButton';
 import RedirectBox from './RedirectBox';
-import Message from '../message/Message';
+// components
+import SubmitButton from '../../components/SubmitButton';
+
 
 
 
