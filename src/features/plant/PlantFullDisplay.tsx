@@ -1,4 +1,4 @@
-import ImageContainer from './ImageContainer';
+import ImageContainer from '../image/ImageContainer';
 import { useAppSelector } from '../../app/hooks';
 import { selectSpecificPlant } from './plantSlice';
 import { useNavigate } from 'react-router-dom';
