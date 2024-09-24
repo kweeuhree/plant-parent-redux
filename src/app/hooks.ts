@@ -55,7 +55,7 @@ export const useNavigateToPath = () => {
         timeout ? (
             setTimeout(() => {
                 navigateToPath(path);
-            })
+            }, timeout)
         ) : (
             navigateToPath(path)
         )
