@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Fragment } from 'react/jsx-runtime';
-import { useAppDispatch, useAppSelector, useInputData } from '../../app/hooks';
+import { useAppDispatch, useAppSelector, useInputData, useNavigateToPath } from '../../app/hooks';
 // message slice imports
 import { setMessageWithTimeout } from '../message/messageSlice';
 import Message from '../message/Message';
@@ -60,7 +59,7 @@ const SignUpLoginForm = ({ formMode }: Props) => {
         signUpWrapper(data) : 
         loginWrapper(data)
     );
-    const navigate = useNavigate();
+    const navigate = useNavigateToPath('');
     
 
     const signUpWrapper = (data: UserInput) => {
@@ -81,10 +80,7 @@ const SignUpLoginForm = ({ formMode }: Props) => {
             dispatch(setMessageWithTimeout(authenticatedUser.Flash));
             // when user logs in check plants length, navigate to all-plants 
             // if plants exist, else navigate to add new plant
-            setTimeout(() => {
-                hasPlants ? navigate('/all-plants') : navigate('/add-new-plant');
-            }, 1000);
-
+            navigate(hasPlants ? '/all-plants' : '/add-new-plant', 1000);
     }
 
   return (

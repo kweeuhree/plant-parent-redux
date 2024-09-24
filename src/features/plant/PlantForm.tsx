@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector, useInputData } from '../../app/hooks';
+import { useAppDispatch, useAppSelector, useInputData, useNavigateToPath } from '../../app/hooks';
 // image slice imports
 import type { Image } from '../image/imageSlice';
 import { uploadImage } from '../image/imageSlice';
@@ -12,7 +11,7 @@ import { setMessageWithTimeout } from '../message/messageSlice';
 import { addNewPlant, selectSpecificPlant, updatePlant } from './plantSlice';
 import { addNewPlantReq, updatePlantReq } from './fetchPlant';
 // components
-import SubmitButton from '../../components/SubmitButton';
+import Button from '../../components/Button';
 
 type Props = {
   formMode: string, 
@@ -26,19 +25,23 @@ export type PlantData = {
 
 const PlantForm = ({ formMode, plantId }: Props) => {
   const { loading, error } = useAppSelector(state => state.images);
+
   useEffect(() => {
     console.log(`Current form type: ${formMode}`);
 }, [formMode]);
+
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
-    const initialState: PlantData =  formMode === 'ADD' ? {name: '', image: null} : {image: null}; 
+    const navigate = useNavigateToPath('');
+
     // useInputData hook takes initialState and a callback function as arguments
+    const initialState: PlantData =  formMode === 'ADD' ? {name: '', image: null} : {image: null}; 
     const { inputData, file, handleChange, handleSubmit } = useInputData(
         initialState, 
         (plantData) => processPlantData(plantData) 
     );
-//--------
-let plant = useAppSelector(selectSpecificPlant);
+
+    // use selected plant on form update
+    const plant = useAppSelector(selectSpecificPlant);
 
 
     const processPlantData = async (plantData: PlantData) => {
@@ -46,10 +49,10 @@ let plant = useAppSelector(selectSpecificPlant);
       formData.append('file', plantData.image);
 
       try {
-        // dispatch(uploadRequest());
         const imageIsUploaded = await dispatch(uploadImage(formData)); 
         console.log(imageIsUploaded.imageUrl, 'image secure url');
         console.log(imageIsUploaded.imageId, 'image id');
+
         formMode === 'ADD' ?
       addNewPlantWrapper(plantData.name, imageIsUploaded) :
       updatePlantWrapper(imageIsUploaded);
@@ -68,15 +71,12 @@ let plant = useAppSelector(selectSpecificPlant);
           dispatch(setMessageWithTimeout(plantIsAdded.Flash));
           dispatch(addNewPlant(plantIsAdded));
           console.log('Just added image info:', plantIsAdded.name, plantIsAdded.plantId);
-        
+
+          navigate('/all-plants', 1000);
         } 
       } catch (error) {
         throw new Error(`Failed adding new plant: ${error}`);
-      } finally {
-        setTimeout(() => {
-          navigate('/all-plants');
-        }, 1000);
-      }
+      } 
     }
 
     const updatePlantWrapper = async (newImage: Image) => {
@@ -89,19 +89,14 @@ let plant = useAppSelector(selectSpecificPlant);
             plantId: plant.plantId,
             image: {...plantIsUpdated.image},
           }));
-
-          
+          navigate('/all-plants', 1000);
           
         } else {
           dispatch(setMessageWithTimeout(plantIsUpdated.Flash));
         }
       } catch (error) {
         throw new Error(`Failed updating plant: ${error}`);
-      } finally {
-        setTimeout(() => {
-          navigate('/all-plants');
-        }, 1000);
-      }
+      } 
     }
     
   
@@ -130,7 +125,7 @@ let plant = useAppSelector(selectSpecificPlant);
             onChange={handleChange}
             required />
 
-          <SubmitButton text={loading ? 'Uploading...' : 'Upload'}/> 
+          <Button type="submit" text={loading ? 'Uploading...' : 'Upload'}/> 
           <ImageContainer alt="Preview" src={file ? file : plant?.image.imageUrl} />
       </form>
   
