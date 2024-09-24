@@ -1,6 +1,7 @@
 import { useAppSelector } from '../../app/hooks';
-import { selectAuthStatus } from './userSlice';
 import { Navigate } from 'react-router-dom';
+// user slice import
+import { selectAuthStatus } from './userSlice';
 
 type ProtectedRouteProps = {
     element: React.ComponentType<any>; // The component that will be rendered
