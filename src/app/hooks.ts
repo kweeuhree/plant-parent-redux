@@ -8,6 +8,8 @@ import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "./store"
 import { useNavigate } from 'react-router-dom';
+import { selectSpecificPlant } from '../features/plant/plantSlice';
+import { setMessageWithTimeout } from '../features/message/messageSlice';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>()
@@ -15,7 +17,7 @@ export const useAppSelector = useSelector.withTypes<RootState>()
 
 export const useInputData = <T,>(initialState: T, callback: (data: T) => void) => {
     const [inputData, setInputData] = useState<T>(initialState);
-    const [file, setFile] = useState<File | string>('');
+    const [file, setFile] = useState<string>('');
 
     const handleChange = useCallback(
         ({ target }: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,11 +44,11 @@ export const useInputData = <T,>(initialState: T, callback: (data: T) => void) =
 };
 
 
-export const useNavigateToPath = (basePath: string) => {
+export const useNavigateToPath = () => {
     const navigate = useNavigate();
 
     const navigateToPath = (path: string) => {
-        navigate(`${basePath}${path}`)
+        navigate(path);
     }
 
     const handleNavigateToPath = (path: string, timeout?: number) => {
@@ -61,4 +63,18 @@ export const useNavigateToPath = (basePath: string) => {
     }
 
   return handleNavigateToPath;
+}
+
+export const useSelectedPlant = () => {
+    return useAppSelector(selectSpecificPlant);
+}
+
+export const useMessageWithTimeOut = () => {
+    const dispatch = useAppDispatch();
+
+    const setMessage = (message: string) => {
+        dispatch(setMessageWithTimeout(message))
+    }
+
+    return setMessage;
 }

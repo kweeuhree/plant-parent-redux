@@ -1,8 +1,6 @@
-import { useEffect } from 'react';
 import { Fragment } from 'react/jsx-runtime';
-import { useAppDispatch, useAppSelector, useInputData, useNavigateToPath } from '../../app/hooks';
+import { useAppDispatch, useAppSelector, useInputData, useMessageWithTimeOut, useNavigateToPath } from '../../app/hooks';
 // message slice imports
-import { setMessageWithTimeout } from '../message/messageSlice';
 import Message from '../message/Message';
 // plant slice imports
 import { selectPlantsExist } from '../plant/plantSlice';
@@ -47,25 +45,25 @@ const redirectOptions = {
 }
 
 const SignUpLoginForm = ({ formMode }: Props) => {
-    useEffect(() => {
-        console.log(`Current form type: ${formMode}`);
-    }, []);
-    // useInputData hook takes initialState and a callback function as arguments
     const dispatch = useAppDispatch();
     const hasPlants = useAppSelector(selectPlantsExist);
+    const loginRedirectPath = hasPlants ? '/all-plants' : '/add-new-plant';
+    const setMessage = useMessageWithTimeOut();
+    const navigate = useNavigateToPath();
+    // useInputData hook takes initialState and a callback function as arguments
     const { inputData, handleChange, handleSubmit } = useInputData(
         initialState, 
         (data) => formMode === 'SIGNUP' ? 
         signUpWrapper(data) : 
         loginWrapper(data)
     );
-    const navigate = useNavigateToPath('');
+
     
 
     const signUpWrapper = (data: UserInput) => {
         const newUser = reqUserSignUp(data);
         newUser &&
-            dispatch(setMessageWithTimeout(newUser.Flash));
+            setMessage(newUser.Flash);
     }
 
     const loginWrapper = (data: UserInput) => {
@@ -74,13 +72,15 @@ const SignUpLoginForm = ({ formMode }: Props) => {
             dispatch(userLogin({
                 id: authenticatedUser.userId, 
                 email: authenticatedUser.email, 
-                password: authenticatedUser.hashedPassword}))
+                password: authenticatedUser.hashedPassword,
+                dateCreated: authenticatedUser.dateCreated,
+            }))
             ) 
 
-            dispatch(setMessageWithTimeout(authenticatedUser.Flash));
+            setMessage(authenticatedUser.Flash);
             // when user logs in check plants length, navigate to all-plants 
             // if plants exist, else navigate to add new plant
-            navigate(hasPlants ? '/all-plants' : '/add-new-plant', 500);
+            navigate(loginRedirectPath, 1000);
     }
 
   return (

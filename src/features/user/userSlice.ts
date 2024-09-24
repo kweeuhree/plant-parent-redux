@@ -4,7 +4,7 @@ import { createAppSlice } from "../../app/createAppSlice"
 
 export type User = {
     userId: number,
-    dateCreated: Date | null,
+    dateCreated: string,
     email: string,
     hashedPassword: string,
     isAuthenticated: boolean,
@@ -13,7 +13,7 @@ export type User = {
 
 export const initialState: User = {
     userId: -1,
-    dateCreated: null,
+    dateCreated: '',
     email: '',
     hashedPassword: '',
     isAuthenticated: false,
@@ -24,12 +24,13 @@ export const userSlice = createAppSlice({
     name:"user",
     initialState,
     reducers: {
-        userLogin:(state, action: PayloadAction<{id: number, email: string, password: string}>) => {
-            const { id, email, password } = action.payload;
-            console.log(`User reducer loggin in with: ${action.payload}`);
+        userLogin:(state, action: PayloadAction<{id: number, email: string, password: string, dateCreated: string}>) => {
+            const { id, email, password, dateCreated } = action.payload;
+            console.log(`User logged in.`);
             state.userId = id;
             state.email = email;
             state.hashedPassword = password;
+            state.dateCreated = dateCreated;
             state.isAuthenticated = true;
         },
         userLogout:(state) => {
@@ -48,3 +49,13 @@ export const { selectUser, selectAuthStatus } = userSlice.selectors
 
 
 export default userSlice.reducer;
+
+const oneDayInMilliseconds = 1000 * 60 * 60 * 24;
+
+export const getAccountDays = (dateCreated: string): number => {
+    const accountCreated = new Date(dateCreated).getTime();
+    const today = new Date().getTime();
+
+    return Math.floor((today - accountCreated) / oneDayInMilliseconds);
+
+  }

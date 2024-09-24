@@ -1,5 +1,4 @@
-import { useAppDispatch } from '../../app/hooks';
-import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useNavigateToPath } from '../../app/hooks';
 // image slice imports
 import ImageContainer from "../image/ImageContainer";
 // plant slice imports
@@ -14,7 +13,7 @@ type Props = {
 const PlantPreview = ( {plant}: Props ) => {
     const { plantId, name, image:{imageId, imageUrl} } = plant;
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
+    const navigate = useNavigateToPath();
 
     const handleClick = () => {
         console.log(`Attempting to navigate to ${plantId}`);

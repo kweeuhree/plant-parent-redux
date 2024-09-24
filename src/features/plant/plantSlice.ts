@@ -1,5 +1,5 @@
 import type { PayloadAction } from "@reduxjs/toolkit"
-import type { AppThunk, RootState } from "../../app/store"
+// import type { AppThunk, RootState } from "../../app/store"
 import { createAppSlice } from "../../app/createAppSlice"
 import type { Image } from "../image/imageSlice"
 
@@ -33,6 +33,9 @@ export const plantSlice = createAppSlice({
         const foundPlant = state.plants.find(plant => plant.plantId === action.payload);
         state.selectedPlant = foundPlant;
       },
+      unselectPlant:(state) => {
+        state.selectedPlant = undefined;
+      },
       addNewPlant: (state, action: PayloadAction<Plant>) => {
         state.plants.push(action.payload);
       },
@@ -56,7 +59,7 @@ export const plantSlice = createAppSlice({
         });
       },
     //   this function will be responsible for creating a new timeline in the backend
-      updatePlantImage: (state, action: PayloadAction<{ plantId: string; image: string }>) => {
+      updatePlantImage: (state, action: PayloadAction<{ plantId: string; image: Image }>) => {
         state.plants = state.plants.map((plant) => {
           if (plant.plantId === action.payload.plantId) {
             return { ...plant, image: action.payload.image };
@@ -97,7 +100,7 @@ export const plantSlice = createAppSlice({
   });
 
 export const { getPlantById, addNewPlant, updatePlant, updatePlantImage, deletePlant, 
-               repotPlant, makeAPup, soilMixRecipe } = plantSlice.actions;
+               repotPlant, makeAPup, soilMixRecipe, unselectPlant } = plantSlice.actions;
 
 export const { selectPlantsExist, selectPlants, selectSpecificPlant } = plantSlice.selectors
 
