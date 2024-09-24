@@ -1,3 +1,4 @@
+// plant slice imports
 import PlantPreview from "./PlantPreview"
 import type { Plant } from './plantSlice'
 
