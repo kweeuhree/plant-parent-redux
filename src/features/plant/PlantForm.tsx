@@ -12,6 +12,7 @@ import { addNewPlant, selectSpecificPlant, updatePlant } from './plantSlice';
 import { addNewPlantReq, updatePlantReq } from './fetchPlant';
 // components
 import Button from '../../components/Button';
+import NavigateToProfileButton from '../../components/NavigateToProfileButton';
 
 type Props = {
   formMode: string, 
@@ -128,7 +129,7 @@ const PlantForm = ({ formMode, plantId }: Props) => {
           <Button type="submit" text={loading ? 'Uploading...' : 'Upload'}/> 
           <ImageContainer alt="Preview" src={file ? file : plant?.image.imageUrl} />
       </form>
-  
+        <NavigateToProfileButton />
   </>
   )
 }
