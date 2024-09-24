@@ -1,5 +1,5 @@
 import type { PayloadAction } from "@reduxjs/toolkit"
-import type { AppThunk, RootState } from "../../app/store"
+import type { AppThunk } from "../../app/store"
 import { createAppSlice } from "../../app/createAppSlice"
 
 export type Image = {
@@ -87,7 +87,7 @@ export const uploadImage = (formData: FormData): AppThunk => async (dispatch) =>
       }
     );
     const data = await response.json();
-    console.log(data, 'received after uploading to cloudinary');
+    console.log(`Secure url: ${data.secure_url}`);
     if (!response.ok) {
       throw new Error(data.error?.message || 'Image upload failed');
     }

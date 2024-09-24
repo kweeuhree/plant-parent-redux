@@ -1,5 +1,5 @@
 import type { PayloadAction } from "@reduxjs/toolkit"
-import type { AppThunk, RootState } from "../../app/store"
+// import type { AppThunk, RootState } from "../../app/store"
 import { createAppSlice } from "../../app/createAppSlice"
 import type { Image } from "../image/imageSlice"
 

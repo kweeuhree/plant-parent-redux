@@ -18,17 +18,18 @@ type Props = {
   plantId?: string,
 }
 
-export type PlantData = {
-  name: string,
-  image: Image,
+// export type PlantInput = {
+//   name?: string,
+//   image: File | Blob, 
+// }
+
+export type PlantData<T> = {
+  name?: string,
+  image?: T, 
 }
 
-const PlantForm = ({ formMode, plantId }: Props) => {
+const PlantForm = ({ formMode }: Props) => {
   const { loading, error } = useAppSelector(state => state.images);
-
-  useEffect(() => {
-    console.log(`Current form type: ${formMode}`);
-}, [formMode]);
 
     const dispatch = useAppDispatch();
     const navigate = useNavigateToPath();
@@ -41,36 +42,29 @@ const PlantForm = ({ formMode, plantId }: Props) => {
   }, [formMode, dispatch]);
 
     // useInputData hook takes initialState and a callback function as arguments
-    const initialState: PlantData =  formMode === 'ADD' ? {name: '', image: null} : {image: null}; 
+    const initialState =  formMode === 'ADD' ? {name: '', image: ''} : {name: plant?.name, image: plant?.image.imageUrl}; 
     const { inputData, file, handleChange, handleSubmit } = useInputData(
         initialState, 
         (plantData) => processPlantData(plantData) 
     );
 
-    // use selected plant on form update
-    const plant = useAppSelector(selectSpecificPlant);
-
-
-    const processPlantData = async (plantData: PlantData) => {
+    const processPlantData = async (plantData: PlantData<any>) => {
       const formData = new FormData();
       formData.append('file', plantData.image);
+        try {
+          const imageIsUploaded = await dispatch(uploadImage(formData)); 
+          if(imageIsUploaded === undefined || !plantData.name) return;
 
-      try {
-        const imageIsUploaded = await dispatch(uploadImage(formData)); 
-        console.log(imageIsUploaded.imageUrl, 'image secure url');
-        console.log(imageIsUploaded.imageId, 'image id');
-
-        formMode === 'ADD' ?
-      addNewPlantWrapper(plantData.name, imageIsUploaded) :
-      updatePlantWrapper(imageIsUploaded);
-
+          formMode === 'ADD' ?
+        addNewPlantWrapper(imageIsUploaded, plantData.name) :
+        updatePlantWrapper(imageIsUploaded);
+      
       } catch(error) {
         setMessage(`${error instanceof Error && error}`);
       }
     }
 
-    const addNewPlantWrapper = (plantName: string, image) =>  {
-      console.log(`Adding new plant: ${plantName}`);
+    const addNewPlantWrapper = (image: Image, plantName: string) =>  {
       try {
         const plantIsAdded = addNewPlantReq(image, plantName);
         if(plantIsAdded) {
