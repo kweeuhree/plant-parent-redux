@@ -13,7 +13,7 @@ import type { User } from './userSlice';
 import { reqUserLogin, reqUserSignUp } from './fetchUser';
 import RedirectBox from './RedirectBox';
 // components
-import SubmitButton from '../../components/SubmitButton';
+import Button from '../../components/Button';
 
 
 
@@ -112,7 +112,7 @@ const SignUpLoginForm = ({ formMode }: Props) => {
             })
         }
 
-        <SubmitButton />
+        <Button type="submit" />
     </form>
 
      <RedirectBox redirect={formMode === 'SIGNUP' ? redirectOptions.SIGNUP : redirectOptions.LOGIN} />

@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom';
-import SubmitButton from '../../components/SubmitButton';
+import Button from '../../components/Button';
+import { useNavigateToPath } from '../../app/hooks';
 
 type Props = {
     redirect: {
@@ -10,18 +10,18 @@ type Props = {
 };
 
 const RedirectBox = ({redirect}: Props) => {
-    const navigate = useNavigate();
+    const navigate = useNavigateToPath('');
     const { redirectPath, content, buttonText } = redirect;
-
-    const handleClick = () => {
-        console.log(`Redirecting to ${redirectPath}`);
-        navigate(redirectPath);
-    }
 
   return (
     <div className="redirect-box">
         <p>{content}</p>
-        <SubmitButton onClick={handleClick} text={buttonText} />
+        
+        <Button
+            type="submit" 
+            onClick={() => navigate(redirectPath)} 
+            text={buttonText} 
+        />
     </div>
   )
 }
