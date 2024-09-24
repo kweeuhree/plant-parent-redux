@@ -32,7 +32,7 @@ export const setMessageWithTimeout = (newMessage: string): AppThunk => (dispatch
     dispatch(updateMessage(newMessage));
     setTimeout(() => {
         dispatch(clearMessage());
-    }, 3000);
+    }, 1000);
 }
 
 export default messageSlice.reducer;
