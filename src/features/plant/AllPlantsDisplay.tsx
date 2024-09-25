@@ -4,6 +4,7 @@ import PlantPreview from "./PlantPreview"
 import type { Plant } from './plantSlice'
 // components
 import NavigateToProfileButton from "../../components/NavigateToProfileButton"
+import PlantForm from "./PlantForm"
 
 type Props = {
   plants: Plant[],
@@ -27,7 +28,11 @@ const AllPlantsDisplay = ( { plants }: Props ) => {
           {plantsList}
         </ul>
       ) : (
-        'no plants to display'
+        <>
+        <p>no plants to display</p>
+        <PlantForm formMode="ADD" />
+        </>
+        
       )
     }
     <NavigateToProfileButton />
