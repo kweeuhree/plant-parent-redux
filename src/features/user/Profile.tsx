@@ -1,6 +1,6 @@
-import { useAppSelector, useNavigateToPath } from '../../app/hooks';
+import { useAppDispatch, useAppSelector, useMessageWithTimeOut } from '../../app/hooks';
 // user slice imports
-import { selectUser, getAccountDays } from './userSlice';
+import { selectUser, getAccountDays, userLogout } from './userSlice';
 // components
 import DefaultLayout from '../../layouts/DefaultLayout';
 import Button from '../../components/Button';
@@ -11,11 +11,19 @@ type ButtonOption = {
 
 const Profile = () => {
   const user = useAppSelector(selectUser);
-  const navigate = useNavigateToPath();
+  const dispatch = useAppDispatch();
+  const setMessage = useMessageWithTimeOut();
   const days = getAccountDays(user.dateCreated);
 
   const handleLogout = () => {
     console.log('log out');
+    setMessage('See you soon!');
+    try {
+      dispatch(userLogout());
+    } catch (error) {
+      throw new Error(`${error instanceof Error && error}`);
+    } 
+
   }
 
   const handleChangePassword = () => {
@@ -50,7 +58,7 @@ const Profile = () => {
          {buttonBox}
         </div>
       </main>
-      
+
     </DefaultLayout>
   )
 }
