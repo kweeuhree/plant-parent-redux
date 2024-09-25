@@ -3,8 +3,8 @@ import { useMemo } from "react"
 import PlantPreview from "./PlantPreview"
 import type { Plant } from './plantSlice'
 // components
-import NavigateToProfileButton from "../../components/NavigateToProfileButton"
 import PlantForm from "./PlantForm"
+import DefaultLayout from "../../layouts/DefaultLayout"
 
 type Props = {
   plants: Plant[],
@@ -21,7 +21,7 @@ const AllPlantsDisplay = ( { plants }: Props ) => {
 
 
   return (
-    <>
+    <DefaultLayout>
     {
       plants.length ? (
         <ul>
@@ -35,8 +35,7 @@ const AllPlantsDisplay = ( { plants }: Props ) => {
         
       )
     }
-    <NavigateToProfileButton />
-    </>
+    </DefaultLayout>
   )
 }
 

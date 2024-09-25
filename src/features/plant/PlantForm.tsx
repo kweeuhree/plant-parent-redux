@@ -11,17 +11,12 @@ import { addNewPlant, updatePlant, unselectPlant } from './plantSlice';
 import { addNewPlantReq, updatePlantReq } from './fetchPlant';
 // components
 import Button from '../../components/Button';
-import NavigateToProfileButton from '../../components/NavigateToProfileButton';
+import DefaultLayout from '../../layouts/DefaultLayout';
 
 type Props = {
   formMode: string, 
   plantId?: string,
 }
-
-// export type PlantInput = {
-//   name?: string,
-//   image: File | Blob, 
-// }
 
 export type PlantData<T> = {
   name?: string,
@@ -38,8 +33,15 @@ const PlantForm = ({ formMode }: Props) => {
     const plant = useSelectedPlant();
 
     useEffect(() => {
+      // ensure there is no selected plant if adding a new plant
       formMode === 'ADD' && dispatch(unselectPlant());
   }, [formMode, dispatch]);
+
+    useEffect(() => {
+      if (error) {
+        setMessage(error);
+      }
+    }, [error, setMessage]);
 
     // useInputData hook takes initialState and a callback function as arguments
     const initialState =  formMode === 'ADD' ? {name: '', image: ''} : {name: plant?.name, image: plant?.image.imageUrl}; 
@@ -103,11 +105,12 @@ const PlantForm = ({ formMode }: Props) => {
         throw new Error(`Failed updating plant: ${error}`);
       } 
     }
-    
+
   
     return (
-      <>
-      {!error ? <Message /> : setMessage(error)}
+      <DefaultLayout>
+
+      {!error && <Message /> }
       <form onSubmit={handleSubmit}>
           <label htmlFor='plant-name'>Plant name:</label>
             <input id="plant-name" 
@@ -129,8 +132,7 @@ const PlantForm = ({ formMode }: Props) => {
           <Button type="submit" text={loading ? 'Uploading...' : 'Upload'}/> 
           <ImageContainer alt="Preview" src={file || plant?.image.imageUrl} />
       </form>
-        <NavigateToProfileButton />
-  </>
+  </DefaultLayout>
   )
 }
 

@@ -2,6 +2,7 @@ import { useAppSelector, useNavigateToPath } from '../../app/hooks';
 // user slice imports
 import { selectUser, getAccountDays } from './userSlice';
 // components
+import DefaultLayout from '../../layouts/DefaultLayout';
 import Button from '../../components/Button';
 
 type ButtonOption = {
@@ -25,35 +26,32 @@ const Profile = () => {
     console.log('delete account');
   }
 
-  const buttonBox: ButtonOption = {
+  const buttonBoxOptions: ButtonOption = {
     "Log out": handleLogout,
     "Change password": handleChangePassword,
     "Delete account": handleDeleteAccount,
   }
 
-  return (
-    <div className='profile-page'>
+  const buttonBox = Object.entries(buttonBoxOptions).map(([buttonText, handlerFunc]) => (
+    <Button key={buttonText} text={buttonText} onClick={handlerFunc} />
+   )) 
 
+
+  return (
+    <DefaultLayout>
+      
       {/* main of the profile */}
-      <main>
+      <main className='profile-page'>
         <h3>Hello!</h3>
         <div>Days since account created: {days}</div>
 
       {/* profile buttons */}
         <div className='button-box'>
-         {Object.entries(buttonBox).map(([buttonText, handlerFunc]) => (
-          <Button key={buttonText} text={buttonText} onClick={handlerFunc} />
-         ))}
+         {buttonBox}
         </div>
       </main>
-
-      {/* sidebar */}
-      <div className='sidebar'>
-        <Button text="All plants" onClick={() => navigate('/all-plants')} />
-        <Button text="Add new plant" onClick={() => navigate('/add-new-plant')} />
-      </div>
-
-    </div>
+      
+    </DefaultLayout>
   )
 }
 
