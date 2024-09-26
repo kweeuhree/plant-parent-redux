@@ -21,21 +21,22 @@ const AllPlantsDisplay = ( { plants }: Props ) => {
 
 
   return (
-    <DefaultLayout>
+   <>
     {
       plants.length ? (
+        <DefaultLayout>
         <ul>
           {plantsList}
         </ul>
+        </DefaultLayout>
       ) : (
         <>
         <p>no plants to display</p>
         <PlantForm formMode="ADD" />
         </>
-        
       )
     }
-    </DefaultLayout>
+   </>
   )
 }
 

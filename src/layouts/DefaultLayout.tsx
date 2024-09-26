@@ -12,9 +12,10 @@ type Options = {
     }
 }
 
-const topButtonOptions: Options = {
-    'All plants': {text: 'All plants', redirectPath: '/all-plants'},
-    'Profile': {text: 'Profile', redirectPath: '/profile'},
+const buttonOptions: Options = {
+    all: {text: 'All plants', redirectPath: '/all-plants'},
+    profile: {text: 'Profile', redirectPath: '/profile'},
+    add: {text: 'Add new plant', redirectPath: '/add-new-plant'},
 }
 
 type Props = {
@@ -26,8 +27,12 @@ const DefaultLayout = ({children}: Props) => {
     const location = useLocation();
 
     const topButton = location.pathname === '/profile' 
-    ? topButtonOptions['All plants'] 
-    : topButtonOptions['Profile'];
+    ? buttonOptions.all 
+    : buttonOptions.profile;
+
+    const bottomButton = location.pathname === '/add-new-plant'
+    ? buttonOptions.all 
+    : buttonOptions.add;
 
 
   return (
@@ -37,7 +42,7 @@ const DefaultLayout = ({children}: Props) => {
         </main>
         <nav className="sidebar">
             <Button text={topButton.text} onClick={() => navigate(topButton.redirectPath)} /> 
-            <Button text="Add new plant" onClick={() => navigate('/add-new-plant')} />
+            <Button text={bottomButton.text} onClick={() => navigate(bottomButton.redirectPath)} />
         </nav>
     </div>
   )
