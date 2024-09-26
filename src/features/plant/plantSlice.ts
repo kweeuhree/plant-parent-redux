@@ -42,12 +42,13 @@ export const plantSlice = createAppSlice({
       deletePlant: (state, action: PayloadAction<string>) => {
         state.plants = state.plants.filter((plant) => plant.plantId !== action.payload);
       },
-      updatePlant: (state, action: PayloadAction<{ plantId: string; image: Image }>) => {
+      updatePlant: (state, action: PayloadAction<{ plantId: string; image: Image, name: string }>) => {
         console.log("Action payload: ", action.payload); 
         state.plants = state.plants.map((plant) => {
           if (plant.plantId === action.payload.plantId) {
             return {
               ...plant,
+              name: action.payload.name,
               image: {
                 ...plant.image,  
                 imageId: action.payload.image.imageId, 

@@ -52,18 +52,28 @@ const PlantForm = ({ formMode }: Props) => {
     );
 
     const processPlantData = async (plantData: PlantData<any>) => {
+      if(!plantData.name) {
+        setMessage('Did not find plant name');
+        return;
+      };
+
+      if(!plantData.image && plant?.image) {
+        updatePlantWrapper(plant.image, plantData.name);
+      }
+
       const formData = new FormData();
       formData.append('file', plantData.image);
-        try {
+
+      try {
           const imageIsUploaded = await dispatch(uploadImage(formData)); 
-          if(imageIsUploaded === undefined || !plantData.name) return;
+          if(imageIsUploaded === undefined) return;
 
           formMode === 'ADD' ?
         addNewPlantWrapper(imageIsUploaded, plantData.name) :
-        updatePlantWrapper(imageIsUploaded);
+        updatePlantWrapper(imageIsUploaded, plantData.name);
       
       } catch(error) {
-        setMessage(`${error instanceof Error && error}`);
+        setMessage(`Error: ${error instanceof Error ? error.message : String(error)}`);
       }
     }
 
@@ -82,7 +92,7 @@ const PlantForm = ({ formMode }: Props) => {
       } 
     }
 
-    const updatePlantWrapper = async (newImage: Image) => {
+    const updatePlantWrapper = async (newImage: Image, newName: string) => {
       console.log(`Updating plant with ${newImage.imageId} and ${newImage.imageUrl} `);
 
       if(!plant) {
@@ -91,10 +101,11 @@ const PlantForm = ({ formMode }: Props) => {
       }
 
       try {
-        const plantIsUpdated = await updatePlantReq(newImage, plant.plantId, plant.name, plant.dateCreated);
+        const plantIsUpdated = await updatePlantReq(newImage, plant.plantId, newName, plant.dateCreated);
         if (plantIsUpdated) {
           dispatch(updatePlant({
             plantId: plant.plantId,
+            name: plantIsUpdated.name,
             image: {...plantIsUpdated.image},
           }));
           navigate('/all-plants', 1000);
