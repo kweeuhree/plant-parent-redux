@@ -6,6 +6,8 @@ import { selectUser, getAccountDays, userLogout, changePassword } from './userSl
 import DefaultLayout from '../../layouts/DefaultLayout';
 import Button from '../../components/Button';
 import LabeledInput from '../../components/LabeledInput';
+import Message from '../message/Message';
+import { reqDeleteUser } from './fetchUser';
 
 type ButtonOption = {
   [key: string]: React.MouseEventHandler<HTMLButtonElement>;
@@ -52,6 +54,12 @@ const Profile = () => {
 
   const handleDeleteAccount = () => {
     console.log('delete account');
+    try {
+      reqDeleteUser(user.userId);
+      dispatch(userLogout());
+    } catch(error) {
+      throw new Error(`${error instanceof Error && error}`);
+    }
   }
 
   const buttonBoxOptions: ButtonOption = {
@@ -67,7 +75,7 @@ const Profile = () => {
 
   return (
     <DefaultLayout>
-      
+      <Message />
       {/* main of the profile */}
       <main className='profile-page'>
         <h3>Hello!</h3>

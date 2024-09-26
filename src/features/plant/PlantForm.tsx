@@ -11,6 +11,7 @@ import { addNewPlant, updatePlant, unselectPlant } from './plantSlice';
 import { addNewPlantReq, updatePlantReq } from './fetchPlant';
 // components
 import Button from '../../components/Button';
+import LabeledInput from '../../components/LabeledInput';
 import DefaultLayout from '../../layouts/DefaultLayout';
 
 type Props = {
@@ -111,27 +112,29 @@ const PlantForm = ({ formMode }: Props) => {
       <DefaultLayout>
 
       {!error && <Message /> }
+
       <form onSubmit={handleSubmit}>
-          <label htmlFor='plant-name'>Plant name:</label>
-            <input id="plant-name" 
-              name="name" 
-              type="text" 
-              value={inputData.name} 
-              onChange={handleChange}
-              required />
+        <LabeledInput 
+          label="Plant name:"
+          id="plant-name"
+          name="name"
+          type="text"
+          onChange={handleChange}
+          value={inputData.name} />
+          
+          <br />
 
-            <br />
-
-          <label htmlFor='plant-image'>Plant image:</label>
-          <input id="plant-image" 
-            name="image" 
-            type="file" 
-            onChange={handleChange}
-            required />
+        <LabeledInput 
+          label="Plant image:"
+          id="plant-image"
+          name="image"
+          type="file"
+          onChange={handleChange} />
 
           <Button type="submit" text={loading ? 'Uploading...' : 'Upload'}/> 
           <ImageContainer alt="Preview" src={file || plant?.image.imageUrl} />
       </form>
+      
   </DefaultLayout>
   )
 }

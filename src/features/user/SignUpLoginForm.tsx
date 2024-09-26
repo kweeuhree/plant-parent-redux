@@ -11,6 +11,7 @@ import { reqUserLogin, reqUserSignUp } from './fetchUser';
 import RedirectBox from './RedirectBox';
 // components
 import Button from '../../components/Button';
+import LabeledInput from '../../components/LabeledInput';
 
 
 
@@ -89,20 +90,17 @@ const SignUpLoginForm = ({ formMode }: Props) => {
     <h2>{formMode === 'SIGNUP' ? "Sign up" : "Login"}</h2>
     <form id='user-form' onSubmit={handleSubmit}>
         {
-            Object.entries(inputOptions).map(([key, value]) => {
+            Object.entries(inputOptions).map(([type, label]) => {
                 return (
-                    <Fragment key={key}>
-                    <label htmlFor={key}>{key.charAt(0).toUpperCase() + key.slice(1)}</label>
-                    <input 
-                        type={key} 
-                        id={key} 
-                        name={key}
-                        value={inputData[key as keyof UserInput]}
-                        placeholder={value} 
-                        onChange={handleChange}
-                        required
-                    />
-                    <br />
+                    <Fragment key={type}>
+                        <LabeledInput 
+                            label={label.charAt(0).toUpperCase() + label.slice(1)}
+                            id={type}
+                            name={type}
+                            type={type}
+                            onChange={handleChange}
+                            value={inputData[type as keyof UserInput]} />
+                        <br />
                     </Fragment>
                 )
             })

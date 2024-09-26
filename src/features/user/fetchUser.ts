@@ -31,3 +31,14 @@ export const reqUserLogin = (data: UserInput): User => {
     }
 }
 
+export const reqDeleteUser = async (userId: number) => {
+    console.log(`Attempting to delete a user with id ${userId}`);
+    return true;
+    // try {
+    //     return true;
+
+    // } catch (error) {
+    //     throw new Error('Failed to delete user');
+    // }
+}
+
