@@ -129,7 +129,9 @@ const PlantForm = ({ formMode }: Props) => {
           id="plant-image"
           name="image"
           type="file"
-          onChange={handleChange} />
+          onChange={handleChange}
+          required={formMode === 'UPDATE' && false}
+           />
 
           <Button type="submit" text={loading ? 'Uploading...' : 'Upload'}/> 
           <ImageContainer alt="Preview" src={file || plant?.image.imageUrl} />

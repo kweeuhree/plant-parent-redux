@@ -7,9 +7,10 @@ type Props = {
     type: string,
     onChange: ChangeEventHandler,
     value?: string,
+    required?: boolean,
 }
 
-const LabeledInput = ({label, id, name, type, onChange, value}: Props) => {
+const LabeledInput = ({label, id, name, type, onChange, value, required = true}: Props) => {
   return (
     <>
      <label htmlFor={id}>{label}</label>
@@ -19,7 +20,7 @@ const LabeledInput = ({label, id, name, type, onChange, value}: Props) => {
             type={type} 
             value={value} 
             onChange={onChange}
-            required />
+            required={required} />
     </>
   )
 }
