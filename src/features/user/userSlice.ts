@@ -36,6 +36,10 @@ export const userSlice = createAppSlice({
         userLogout:(state) => {
             return { ...initialState };
         },
+        changePassword:(state, action: PayloadAction<{newPassword: string}>) => {
+            console.log(`Received an attempt to change password to [${action.payload.newPassword}]`);
+            state.hashedPassword = action.payload.newPassword;
+        },
     },
     selectors: {
         selectAuthStatus: state => state.isAuthenticated,
@@ -43,7 +47,7 @@ export const userSlice = createAppSlice({
       },
 });
 
-export const { userLogin, userLogout } = userSlice.actions;
+export const { userLogin, userLogout, changePassword } = userSlice.actions;
 
 export const { selectUser, selectAuthStatus } = userSlice.selectors
 
