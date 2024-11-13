@@ -1,43 +1,33 @@
-import { useMemo } from "react"
-// plant slice imports
-import PlantPreview from "./PlantPreview"
-import type { Plant } from './plantSlice'
-// components
-import PlantForm from "./PlantForm"
-import DefaultLayout from "../../layouts/DefaultLayout"
+import { useMemo } from "react";
+
+import { PlantForm, PlantPreview, type Plant } from "./";
+import DefaultLayout from "../../layouts/DefaultLayout";
 
 type Props = {
-  plants: Plant[],
-}
+  plants: Plant[];
+};
 
-const AllPlantsDisplay = ( { plants }: Props ) => {
-
-  const plantsList = useMemo(() => plants.map((plant) => (
-    <PlantPreview  
-      key={plant.plantId} 
-      plant={plant}
-    />
-  )), [plants]);
-
+const AllPlantsDisplay = ({ plants }: Props) => {
+  const plantsList = useMemo(
+    () =>
+      plants.map(plant => <PlantPreview key={plant.plantId} plant={plant} />),
+    [plants],
+  );
 
   return (
-   <>
-    {
-      plants.length ? (
+    <>
+      {plants.length ? (
         <DefaultLayout>
-        <ul>
-          {plantsList}
-        </ul>
+          <ul>{plantsList}</ul>
         </DefaultLayout>
       ) : (
         <>
-        <p>no plants to display</p>
-        <PlantForm formMode="ADD" />
+          <p>no plants to display</p>
+          <PlantForm formMode="ADD" />
         </>
-      )
-    }
-   </>
-  )
-}
+      )}
+    </>
+  );
+};
 
 export default AllPlantsDisplay;

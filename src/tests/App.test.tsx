@@ -1,6 +1,11 @@
-import { screen, waitFor } from "@testing-library/react";
+import { render } from "@testing-library/react";
+
+import { AppPro}
 import App from "../App";
 
-test("App should have correct initial render", () => {
-  renderWithProviders(<App />);
+test("App should render", () => {
+  render(
+    
+  );
+
 });

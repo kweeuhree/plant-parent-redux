@@ -1,21 +1,23 @@
-import type { Action, ThunkAction } from "@reduxjs/toolkit"
-import { combineSlices, configureStore } from "@reduxjs/toolkit"
-import { setupListeners } from "@reduxjs/toolkit/query"
-import messageSlice from "../features/message/messageSlice"
-import userSlice from "../features/user/userSlice"
-import plantSlice from "../features/plant/plantSlice"
-import imageSlice from "../features/image/imageSlice"
+import {
+  configureStore,
+  combineSlices,
+  type Action,
+  type ThunkAction,
+} from "@reduxjs/toolkit";
+import { setupListeners } from "@reduxjs/toolkit/query";
+
+import { userSlice, plantSlice, imageSlice, messageSlice } from "../features";
 
 // `combineSlices` automatically combines the reducers using
 // their `reducerPath`s, therefore we no longer need to call `combineReducers`.
 const rootReducer = combineSlices({
-  message: messageSlice,
-  user: userSlice,
-  plants: plantSlice,
-  images: imageSlice,
-})
+  message: messageSlice.reducer,
+  user: userSlice.reducer,
+  plants: plantSlice.reducer,
+  images: imageSlice.reducer,
+});
 // Infer the `RootState` type from the root reducer
-export type RootState = ReturnType<typeof rootReducer>
+export type RootState = ReturnType<typeof rootReducer>;
 
 // The store setup is wrapped in `makeStore` to allow reuse
 // when setting up tests that need the same store config
@@ -25,25 +27,25 @@ export const makeStore = (preloadedState?: Partial<RootState>) => {
     // Adding the api middleware enables caching, invalidation, polling,
     // and other useful features of `rtk-query`.
     middleware: getDefaultMiddleware => {
-      return getDefaultMiddleware()  // .concat(quotesApiSlice.middleware)
+      return getDefaultMiddleware(); // .concat(quotesApiSlice.middleware)
     },
     preloadedState,
-  })
+  });
   // configure listeners using the provided defaults
   // optional, but required for `refetchOnFocus`/`refetchOnReconnect` behaviors
-  setupListeners(store.dispatch)
-  return store
-}
+  setupListeners(store.dispatch);
+  return store;
+};
 
-export const store = makeStore()
+export const store = makeStore();
 
 // Infer the type of `store`
-export type AppStore = typeof store
+export type AppStore = typeof store;
 // Infer the `AppDispatch` type from the store itself
-export type AppDispatch = AppStore["dispatch"]
+export type AppDispatch = AppStore["dispatch"];
 export type AppThunk<ThunkReturnType = void> = ThunkAction<
   ThunkReturnType,
   RootState,
   unknown,
   Action
->
+>;

@@ -1,11 +1,7 @@
-import { useAppSelector } from '../../app/hooks';
-import { selectMessage } from './messageSlice';
+import { useAppSelector } from "../../app/hooks";
+import { selectMessage } from "./";
 
-const Message = () => {
-    const { message } = useAppSelector(selectMessage);
-  return (
-    <div>{message}</div>
-  )
-}
-
-export default Message;
+export const Message = () => {
+  const { message } = useAppSelector(selectMessage);
+  return <div>{message}</div>;
+};

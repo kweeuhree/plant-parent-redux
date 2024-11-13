@@ -1,101 +1,117 @@
-import type { PayloadAction } from "@reduxjs/toolkit"
-import type { AppThunk } from "../../app/store"
-import { createAppSlice } from "../../app/createAppSlice"
-
-export type Image = {
-    imageUrl: string,
-    imageId: string,
-  }
-
-type ImageState = {
-  loading: boolean,
-  images: Image[],
-  error: string,
-}
-
-const initialState: ImageState = {
-    loading: false,
-    images: [],
-    error: '',
-
-}
+import type { PayloadAction } from "@reduxjs/toolkit";
+import type { AppThunk } from "../../app/store";
+import { createAppSlice } from "../../app/createAppSlice";
+import { initialState, type Image } from "./";
 
 export const imageSlice = createAppSlice({
-    name: "images",
-    initialState,
-    reducers: {
-      uploadRequest: (state) => {
-        state.loading = true;
-      },
-      uploadSuccess: (state) => {
-        state.loading = false;
-      },
-      uploadFailure: (state, action: PayloadAction<string>) => {
-        state.loading = false;
-        state.error = action.payload;
-      },
-      deleteImage: (state, action: PayloadAction<string>) => {
-        state.images = state.images.filter((image) => image.imageId !== action.payload);
-      },
-      updateImage: (state, action: PayloadAction<Image>) => {
-        state.images = state.images.map((image) => {
-          if (image.imageId === action.payload.imageId) {
-            return { ...image, imageUrl: action.payload.imageUrl };
-          }
-          return image;
-        });
-      },
-    //   this function will be responsible for creating a new timeline in the backend
-      updateTimelineImage: (state, action: PayloadAction<{ imageId: string; image: string }>) => {
-        state.images = state.images.map((image) => {
-          if (image.imageId === action.payload.imageId) {
-            return { ...image, image: action.payload.image };
-          }
-          return image;
-        });
-      },
+  name: "images",
+  initialState,
+  reducers: {
+    uploadRequest: state => {
+      state.loading = true;
     },
-       selectors: {
-            selectImages: state => state.images,
-    }
-  });
+    uploadSuccess: state => {
+      state.loading = false;
+    },
+    uploadFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    updateImage: (state, action: PayloadAction<Image>) => {
+      state.images = state.images.map(image => {
+        if (image.imageId === action.payload.imageId) {
+          return { ...image, imageUrl: action.payload.imageUrl };
+        }
+        return image;
+      });
+    },
+    //   this function will be responsible for creating a new timeline in the backend
+    updateTimelineImage: (
+      state,
+      action: PayloadAction<{ imageId: string; image: string }>,
+    ) => {
+      state.images = state.images.map(image => {
+        if (image.imageId === action.payload.imageId) {
+          return { ...image, image: action.payload.image };
+        }
+        return image;
+      });
+    },
+  },
+  selectors: {
+    selectImages: state => state.images,
+  },
+});
 
-export const { updateTimelineImage, updateImage, uploadRequest, uploadFailure, uploadSuccess, deleteImage } = imageSlice.actions;
+export const {
+  updateTimelineImage,
+  updateImage,
+  uploadRequest,
+  uploadFailure,
+  uploadSuccess,
+} = imageSlice.actions;
 
-export const { selectImages } = imageSlice.selectors
+export const { selectImages } = imageSlice.selectors;
 
+// Define the asynchronous thunks
 
-export default imageSlice.reducer;
+const cloudName = import.meta.env.VITE_CLOUD_NAME;
+const preset = import.meta.env.VITE_PRESET;
+const apiKey = import.meta.env.VITE_API_KEY;
+const apiSecret = import.meta.env.VITE_API_SECRET;
 
-// Define the asynchronous thunk
-export const uploadImage = (formData: FormData): AppThunk => async (dispatch) => {
-  const cloudName = import.meta.env.VITE_CLOUD_NAME;
-  const preset = import.meta.env.VITE_PRESET;
+export const uploadImage =
+  (formData: FormData): AppThunk =>
+  async dispatch => {
+    dispatch(uploadRequest());
 
-  dispatch(uploadRequest());
-  
-  try {
+    try {
+      formData.append("upload_preset", preset);
 
-    formData.append('upload_preset', preset);
-
-    // Make the async request to Cloudinary
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-      {
-        method: 'POST',
-        body: formData,
+      // Make the async request to Cloudinary
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+      const data = await response.json();
+      console.log(`Secure url: ${data.secure_url}`);
+      if (!response.ok) {
+        throw new Error(data.error?.message || "Image upload failed");
       }
-    );
-    const data = await response.json();
-    console.log(`Secure url: ${data.secure_url}`);
-    if (!response.ok) {
-      throw new Error(data.error?.message || 'Image upload failed');
+      dispatch(uploadSuccess());
+      return { imageUrl: data.secure_url, imageId: data.public_id };
+    } catch (error: any) {
+      dispatch(uploadFailure(error.message || "Upload failed"));
     }
-    dispatch(uploadSuccess());
-    return {imageUrl: data.secure_url, imageId: data.asset_id};
-   
+  };
 
-  } catch (error: any) {
-    dispatch(uploadFailure(error.message || 'Upload failed'));
-  }
-};
+export const deleteImage =
+  (imageId: string): AppThunk =>
+  async dispatch => {
+    console.log(`Attempting to request deletion of image`);
+    try {
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/resources/image/upload/${imageId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Basic ${btoa(`${apiKey}:${apiSecret}`)}`, // Base64-encode the key and secret
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete image. Status: ${response.status}`);
+      }
+      const result = await response.json();
+      console.log(`Received this as a result: ${result}`);
+    } catch (error) {
+      throw new Error(
+        (error instanceof Error && error?.message) || "Image upload failed",
+      );
+    }
+  };

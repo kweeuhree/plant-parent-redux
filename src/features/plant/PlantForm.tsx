@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+
 import {
   useAppDispatch,
   useAppSelector,
@@ -7,23 +8,17 @@ import {
   useNavigateToPath,
   useSelectedPlant,
 } from "../../app/hooks";
-// image slice imports
-import type { Image } from "../image/imageSlice";
-import { uploadImage } from "../image/imageSlice";
-import ImageContainer from "../image/ImageContainer";
-// message slice imports
-import Message from "../message/Message";
-// plant slice imports
+import { type Image, uploadImage, ImageContainer } from "../image";
+import { Message } from "../message";
 import {
   addNewPlant,
   updatePlant,
   unselectPlant,
   selectPlantsExist,
-} from "./plantSlice";
-import { addNewPlantReq, updatePlantReq } from "./fetchPlant";
-// components
-import Button from "../../components/Button";
-import LabeledInput from "../../components/LabeledInput";
+  addNewPlantReq,
+  updatePlantReq,
+} from "./";
+import { Button, LabeledInput } from "../../components";
 import DefaultLayout from "../../layouts/DefaultLayout";
 
 type Props = {
